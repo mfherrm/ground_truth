@@ -61,7 +61,7 @@ App {
     MapView{
         id: mV
     }
-
+    property real scaleFactor: AppFramework.displayScaleFactor
 
 }
 

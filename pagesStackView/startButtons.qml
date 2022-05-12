@@ -14,7 +14,7 @@ Rectangle{
         text: "Go"
         MouseArea{
             anchors.fill:parent
-            onClicked: { mainStack.push("../pagesLoader/map.qml"); mainStack.push("../pagesLoader/map.qml"); uiStack.push("mapButtons.qml"); uiStack.push("mapButtons.qml"); menuLoad.source="../pagesLoader/menu.qml"; console.log(main_menu.currentText);
+            onClicked: { mainStack.push("../pagesLoader/map.qml"); mainStack.push("../pagesLoader/map.qml"); uiStack.push("mapButtons.qml"); uiStack.push("mapButtons.qml"); menuLoad.source="../pagesLoader/menu.qml";
 
             }
         }
