@@ -4,7 +4,6 @@ import QtQuick.Controls 2.2
 Column {
     width: parent.width-10
     height: parent.height-300
-
     property alias model: columnRepeater.model
 
     ListView {
@@ -29,10 +28,7 @@ Column {
 
                 width: parent.width
                 height: childrenRect.height
-                property bool expanded: false
-
-
-
+                property bool expanded : false
 
                 Image {
                     id: carot
@@ -188,18 +184,47 @@ Column {
                 height: childrenRect.height * opacity
                 visible: opacity > 0
                 opacity: infoRow2.expanded ? 1 : 0
-                delegate: accordion2
+                delegate: accordion3
                 model: childrent ? childrent : []
                 interactive: false
-                MouseArea{
-                    anchors.fill: parent
-                    onClicked:{ (childrent.count < 0) ? (infoRow2.expanded = !infoRow2.expanded) : console.log(subentryColumn2.model.get(itemIndex).label);}
-                }
+
                 Behavior on opacity { NumberAnimation { duration: 200 } }
             }
         }
     }
 
+    //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+      Component {
+          id: accordion3
+          Column {
+              width: parent.width
+              property int itemIndex: index
+              Item {
+                  id: infoRow3
+
+                  width: parent.width
+                  height: childrenRect.height
+                  property bool expanded: false
+
+                  Text {
+                      anchors {
+                          left: parent.left
+                          top: parent.top
+                          margins: 5
+                          id: lclass3
+                      }
+
+                      visible: parent.visible
+                      text: label
+
+                      MouseArea{
+                          anchors.fill: parent
+                          onClicked:{console.log(label);}
+                      }
+                  }
+              }
+          }
+      }
 
 }

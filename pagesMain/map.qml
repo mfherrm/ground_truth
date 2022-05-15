@@ -12,6 +12,8 @@ Page{
     property double mousePointY
     property string damageType
     property QtObject vp
+    property string labclass
+    property string comment
 
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -702,6 +704,7 @@ Page{
                     accept_geom.visible=false;
                     rect_conf.visible=false;
                     start_edit_button.visible=true;
+                    txtComm.text="";
 
                 }
             }
@@ -723,6 +726,9 @@ Page{
                     accept_geom.visible=false;
                     rect_conf.visible=false;
                     start_edit_button.visible=true;
+                    comment= txtComm.text;
+                    console.log(comment);
+                    txtComm.text="";
                     addPoint();
                 }
             }
