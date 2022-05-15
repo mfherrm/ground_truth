@@ -5,6 +5,7 @@ import ArcGIS.AppFramework 1.0
 import Esri.ArcGISRuntime 100.13
 import QtQuick.Dialogs 1.3
 import "../components"
+import "../functions"
 
 Page{
     property double mousePointX
@@ -20,6 +21,7 @@ Page{
         wrapAroundMode: Enums.WrapAroundModeDisabled
         rotationByPinchingEnabled: true
         zoomByPinchingEnabled: true
+
 
 
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -275,7 +277,7 @@ Page{
                 north_arrow_button.visible=false;
                 gps_button.visible=false;
                 layer_button.visible=false;
-                console.log("Stated editing");
+                console.log("Started editing");
             }
         }
     }
@@ -323,6 +325,8 @@ Page{
                 gps_button.visible=true;
                 layer_button.visible=true;
                 rect_conf.visible=true;
+                cancel_geom.visible=false;
+                accept_geom.visible=false;
                 vp= GeometryEngine.project(mV.currentViewpointCenter.center, mV.spatialReference)
             }
         }
@@ -389,11 +393,63 @@ Page{
         // Button to open the legend
 
         RoundButton_map{
-            id: legend_button
-            anchors.top: layer_button.bottom
-            anchors.left: parent.left
-            text: "Legende"
-        }
+                id: legend_button
+                anchors.top: layer_button.bottom
+                anchors.left: parent.left
+                text: "Legende"
+                MouseArea{
+                    anchors.fill:parent
+                    onClicked: {
+                        if (rect_legend.visible == false) {
+                            rect_legend.visible = true;
+                            console.log(rect_legend.visible)
+                        } else {
+                            rect_legend.visible = false;
+                            console.log(rect_legend.visible)
+                        }
+                    }
+                }
+            }
+
+        // Legend
+            property bool expanded: true
+            Rectangle{
+                id: rect_legend
+                anchors.top: legend_button.top
+                anchors.left: legend_button.right
+                visible: false
+                width: 300
+                height: 250
+                color: "lightgrey"
+                opacity: 0.95
+                radius: 10
+                clip: true
+                border {
+                    color: "darkgrey"
+                    width: 1
+                }
+                Text {
+                    id: legText
+                    text: "Legend"
+                    color: "black"
+                    anchors.top: parent.top
+                    anchors.topMargin: 10
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+                // Catch mouse signals so they don't propagate to the map
+                MouseArea {
+                    anchors.fill: rect_legend
+                    onClicked: mouse.accepted = true
+                    onWheel: wheel.accepted = true
+                }
+                // Animate the expand and collapse of the legend
+                Behavior on visible {
+                    SpringAnimation {
+                        spring: 3
+                        damping: .8
+                    }
+                }
+            }
 
     }
 
@@ -464,29 +520,177 @@ Page{
     Rectangle{
         id: rect_conf
         color: "beige"
-        width: parent.width-10
-        height: parent.height-10
+        width: parent.width-30
+        height: parent.height-30
         radius: 7
         anchors.left: parent.left
-        anchors.leftMargin: 5
+        anchors.leftMargin: 15
         anchors.top: parent.top
-        anchors.topMargin: 5
+        anchors.topMargin: 15
         visible: false
 
         Text {
             id: infoText
-            text: "Geometry"
+            text: "Confirm Geometry"
             color: "black"
             anchors.top: parent.top
             anchors.topMargin: 10
             anchors.horizontalCenter: parent.horizontalCenter
+            font.pointSize: 24
+
         }
+
+
+        //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        Rectangle{
+            id: labelRect
+            anchors.bottom: treeRect.top
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+            width: parent.width-20
+            height: imgTxt.height
+
+            color: "black"
+            opacity: 0.2
+            Text{
+                id:labTxt
+                text: "Selected class label:"
+                font.pointSize: 12
+            }
+        }
+
+        Rectangle{
+            id: treeRect
+            anchors.bottom: shaderTxt.top
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+            width: parent.width-20
+            height: parent.height-440
+            color: "transparent"
+
+            Labels {
+                id: tree
+                anchors.fill: treeRect
+                anchors.margins: 10
+                clip: true
+                z: 3
+            }
+            Rectangle{
+                anchors.fill: treeRect
+                color: "black"
+                opacity: 0.1
+            }
+        }
+
+
+        //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        Rectangle{
+            id: shaderTxt
+            anchors.bottom: imgTxtRect.top
+            anchors.bottomMargin: 3
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+            width: parent.width-20
+            height: parent.height-450
+            color: "light grey"
+            opacity: 0.2
+            radius: 3
+        }
+        TextArea{
+            id: txtComm
+            placeholderText: "Comment:"
+            placeholderTextColor: "grey"
+            anchors.fill: shaderTxt
+
+
+        }
+
+
+        //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        Rectangle{
+            id: imgTxtRect
+            anchors.bottom: imgPrev.top
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+            width: parent.width-20
+            height: imgTxt.height
+            color: "black"
+            opacity: 0.2
+            Text{
+                id:imgTxt
+                text: "Added images"
+                font.pointSize: 12
+            }
+        }
+
+        Rectangle{
+            id: imgPrev
+            anchors.bottom: cameraBttn.top
+            anchors.bottomMargin: 1
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+            width: parent.width-20
+            height: parent.height-525
+            radius: 3
+            color: "black"
+            opacity: 0.1
+
+            Row{
+                anchors.left: parent.left
+                anchors.leftMargin: 4
+                spacing: 4
+
+                Rectangle{
+                    id: img01
+                    width: (imgPrev.width/3)-5
+                    height: imgPrev.height-8
+                    color: "black"
+                    anchors.top: parent.top
+                    anchors.topMargin: 4
+                }
+
+                Rectangle{
+                    id: img02
+                    width: (imgPrev.width/3)-6
+                    height: imgPrev.height-8
+                    color: "black"
+                    anchors.top: parent.top
+                    anchors.topMargin: 4
+                }
+
+                Rectangle{
+                    id: img03
+                    width: (imgPrev.width/3)-5
+                    height: imgPrev.height-8
+                    color: "black"
+                    anchors.top: parent.top
+                    anchors.topMargin: 4
+                }
+            }
+        }
+
+        Button_wide{
+            id: cameraBttn
+            width: parent.width-10
+            anchors.left:parent.left
+            anchors.bottom: cancel_conf.top
+            anchors.leftMargin: 5
+            text: "Camera"
+
+        }
+
+
+    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
         Button_half{
             id: cancel_conf
             anchors.left: parent.left
             anchors.leftMargin: 5
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 2
+            anchors.bottomMargin: 5
             width: parent.width/2 -7
             text: "Cancel"
 
@@ -508,7 +712,7 @@ Page{
             anchors.right: parent.right
             anchors.rightMargin: 5
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 2
+            anchors.bottomMargin: 5
             width: parent.width/2 -7
             text: "Submit"
             MouseArea{
@@ -522,6 +726,115 @@ Page{
                     addPoint();
                 }
             }
+        }
+
+
+        //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        function update() {
+            var data = [
+                        {"childrent":[
+
+                                {"childrent":[
+                                        {"childrent":[],"label":"Metal roof","type":""},
+                                        {"childrent":[],"label":"Concrete roof","type":""},
+                                        {"childrent":[],"label":"Sheet roof","type":""},
+                                        {"childrent":[],"label":"Other","type":""}
+                                    ],"label":"Ia - Homestead","type":"4 items"},
+
+                                {"childrent":[
+                                        {"childrent":[],"label":"Occupied dwelling","type":""},
+                                        {"childrent":[],"label":"Vacant dwelling","type":""},
+                                        {"childrent":[],"label":"Cattle shed","type":""},
+                                        {"childrent":[],"label":"Garage shed","type":""},
+                                        {"childrent":[],"label":"Other","type":""}
+                                    ],"label":"Ib - Homestead","type":"5 items"},
+
+                                {"childrent":[
+                                        {"childrent":[],"label":"Fence","type":""},
+                                        {"childrent":[],"label":"Wall","type":""},
+                                        {"childrent":[],"label":"Hedge","type":""},
+                                        {"childrent":[],"label":"Other","type":""}
+                                    ],"label":"II - Plot boundaries","type":"4 items"},
+
+                                {"childrent":[
+                                        {"childrent":[],"label":"Pavement","type":""},
+                                        {"childrent":[],"label":"Grass meadow","type":""},
+                                        {"childrent":[],"label":"Unused land","type":""},
+                                        {"childrent":[],"label":"Other","type":""}
+                                    ],"label":"III - Miscellaneous land cover in settlement","type":"4 items"},
+
+                                {"childrent":[
+                                        {"childrent":[],"label":"Maize","type":""},
+                                        {"childrent":[],"label":"Sorghum","type":""},
+                                        {"childrent":[],"label":"Wheat","type":""},
+                                        {"childrent":[],"label":"Beans","type":""},
+                                        {"childrent":[],"label":"Beetroots","type":""},
+                                        {"childrent":[],"label":"Cabbage","type":""},
+                                        {"childrent":[],"label":"Carrots","type":""},
+                                        {"childrent":[],"label":"Cowpeas","type":""},
+                                        {"childrent":[],"label":"Fruit tree(s)","type":""},
+                                        {"childrent":[],"label":"Groundnuts","type":""},
+                                        {"childrent":[],"label":"Lettuce","type":""},
+                                        {"childrent":[],"label":"Onions","type":""},
+                                        {"childrent":[],"label":"Spinach","type":""},
+                                        {"childrent":[],"label":"Tomatoes","type":""},
+                                        {"childrent":[],"label":"Fallow land","type":""},
+                                        {"childrent":[],"label":"Burnt area","type":""},
+                                        {"childrent":[],"label":"Other","type":""}
+                                    ],"label":"IV - Agriculture","type":"17 items"},
+
+                                {"childrent":[
+                                        {"childrent":[],"label":"Tarmac road","type":""},
+                                        {"childrent":[],"label":"Paved road","type":""},
+                                        {"childrent":[],"label":"Dirt road","type":""},
+                                        {"childrent":[],"label":"Other","type":""}
+                                    ],"label":"V - Roads","type":"4 items"},
+
+                                {"childrent":[
+                                        {"childrent":[],"label":"Industry","type":""},
+                                        {"childrent":[],"label":"Car park","type":""},
+                                        {"childrent":[],"label":"Open ground","type":""},
+                                        {"childrent":[],"label":"Outcrop","type":""},
+                                        {"childrent":[],"label":"Dumpsite","type":""},
+                                        {"childrent":[],"label":"Cemetery","type":""},
+                                        {"childrent":[],"label":"Golf club","type":""},
+                                        {"childrent":[],"label":"Other","type":""}
+                                    ],"label":"VI - Other urban land use","type":"8 items"},
+
+                                {"childrent":[
+                                        {"childrent":[],"label":"Forest","type":""},
+                                        {"childrent":[],"label":"Bushland","type":""},
+                                        {"childrent":[],"label":"Shrubland","type":""},
+                                        {"childrent":[],"label":"Grassland","type":""},
+                                        {"childrent":[],"label":"Rangeland","type":""},
+                                        {"childrent":[],"label":"Single tree(s)","type":""},
+                                        {"childrent":[],"label":"Other","type":""}
+                                    ],"label":"VII - Natural Vegetation","type":"7 items"},
+
+                                {"childrent":[
+                                        {"childrent":[],"label":"Stream","type":""},
+                                        {"childrent":[],"label":"Dried river bank","type":""},
+                                        {"childrent":[],"label":"Natural Pond","type":""},
+                                        {"childrent":[],"label":"Water dam","type":""},
+                                        {"childrent":[],"label":"Water tank (closed)","type":""},
+                                        {"childrent":[],"label":"Other","type":""}
+                                    ],"label":"VIII - Water bodies","type":"6 items"}],
+                            "label":"LUC","type":""},
+
+                        {"childrent":[
+                                {"childrent":[{"childrent":[],"label":"Other","type":""}],"label":"I - Places","type":"Comment"},
+                                {"childrent":[{"childrent":[],"label":"Other","type":""}],"label":"II - Purpose","type":"Comment"}]
+                            ,"label":"Other","type":""}];
+
+            tree.model.clear();
+            data.forEach(function(row) {
+                tree.model.append(row);
+            });
+        }
+
+        Component.onCompleted: {
+            update();
         }
 
     }

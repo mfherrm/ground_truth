@@ -23,58 +23,23 @@ Page{
 
 //Einfügen Rechteck und Text für Namenseingabe
 
-        Rectangle {
-            id: nameRect
-            width: 100
-            height: 40
-            anchors.top: logo.bottom
-            anchors.topMargin: 20
+        TextField{
+            id: nameText
+            placeholderText: "Enter your name"
+            placeholderTextColor: "grey"
+            width: logo.width
+            height: parent.height-600
+            anchors.top:logo.bottom
             anchors.left: logo.left
-            color: "beige"
-            border.color: "black"
-            border.width: 1
+
+
         }
-           Text {
-                   id: nameText
-                   text: "Name: "
-                   color: "black"
-                   font.pointSize: 20
-                   anchors.centerIn: nameRect
-
-               }
-
-// Einfügen Rechteck und Textinput für Namenseingabe
-
-            Rectangle {
-               id: inputRect
-               width: 200
-               height: 40
-               anchors.top: logo.bottom
-               anchors.topMargin: 20
-               anchors.left: nameRect.right
-               anchors.leftMargin: 15
-               color: "beige"
-               border.color: "black"
-               border.width: 1
-           }
-
-            TextInput {
-                id: nameInput
-                width: 180
-                anchors.centerIn: inputRect
-                text: "Username"
-                font.pointSize: 20
-                color: "black"
-                cursorVisible: false
-           }
-
-// Einfügen Rechteck und Text für Quickstartguide
 
             Rectangle {
                id: qsRect
                width: 400
                height: 60
-               anchors.top: nameRect.bottom
+               anchors.top: nameText.bottom
                anchors.topMargin: 20
                color: "beige"
                border.color: "black"
@@ -105,7 +70,7 @@ Page{
                 width: 60
                 height: 60
                 anchors.right: qsRect.right
-                anchors.top: nameRect.bottom
+                anchors.top: nameText.bottom
                 anchors.topMargin: 20
                 color: "beige"
                 border.color: "black"

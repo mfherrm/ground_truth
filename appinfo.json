@@ -16,7 +16,7 @@
                 "externalAccessory": false
             },
             "location": {
-                "enabled": false
+                "enabled": true
             }
         },
         "beacon": false,
