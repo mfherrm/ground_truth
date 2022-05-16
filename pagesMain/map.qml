@@ -12,8 +12,8 @@ Page{
     property double mousePointY
     property string damageType
     property QtObject vp
-    property string labclass
     property string comment
+    property string labclass: tree.cLab
 
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -279,9 +279,21 @@ Page{
                 north_arrow_button.visible=false;
                 gps_button.visible=false;
                 layer_button.visible=false;
+                crosshair.visible=true;
                 console.log("Started editing");
             }
         }
+    }
+
+
+    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    Image{
+        id: crosshair
+        source: "../images/crosshair.svg"
+        anchors.centerIn: mV
+        visible: false
+        scale: 0.5
     }
 
 
@@ -304,6 +316,7 @@ Page{
                 gps_button.visible=true;
                 layer_button.visible=true;
                 accept_geom.visible=false;
+                crosshair.visible=false;
             }
         }
     }
@@ -322,13 +335,13 @@ Page{
         MouseArea{
             anchors.fill:parent
             onClicked: {
-                //addPoint();
                 north_arrow_button.visible=true;
                 gps_button.visible=true;
                 layer_button.visible=true;
                 rect_conf.visible=true;
                 cancel_geom.visible=false;
                 accept_geom.visible=false;
+                crosshair.visible=false;
                 vp= GeometryEngine.project(mV.currentViewpointCenter.center, mV.spatialReference)
             }
         }
@@ -545,6 +558,7 @@ Page{
 
         //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
         Rectangle{
             id: labelRect
             anchors.bottom: treeRect.top
@@ -559,6 +573,7 @@ Page{
                 id:labTxt
                 text: "Selected class label:"
                 font.pointSize: 12
+
             }
         }
 
@@ -577,6 +592,9 @@ Page{
                 anchors.margins: 10
                 clip: true
                 z: 3
+                onCLabChanged: {
+                    labTxt.text= "Selected class label: " + cLab;
+                }
             }
             Rectangle{
                 anchors.fill: treeRect
@@ -730,6 +748,8 @@ Page{
                     console.log(comment);
                     txtComm.text="";
                     addPoint();
+                    console.log(labclass);
+                    tree.expanded= false;
                 }
             }
         }
@@ -852,7 +872,6 @@ Page{
 
         var featureAttributes = {"typdamage" : "Major", "primcause" : "Earthquake"};
 
-        // create a new feature using the mouse's map point
         var feature = featureTable.createFeatureWithAttributes(featureAttributes,vp);
 
         // add the new feature to the feature table

@@ -5,6 +5,7 @@ Column {
     width: parent.width-10
     height: parent.height-300
     property alias model: columnRepeater.model
+    property alias cLab: columnRepeater.cLab
 
     ListView {
         id: columnRepeater
@@ -16,6 +17,8 @@ Column {
         model: ListModel { }
 
         ScrollBar.vertical: ScrollBar { }
+        property string cLab:""
+
     }
 
     Component {
@@ -69,7 +72,7 @@ Column {
 
                     MouseArea{
                         anchors.fill: parent
-                        onClicked:{ (infoRow.expanded = !infoRow.expanded) }
+                        onClicked:{ (infoRow.expanded = !infoRow.expanded);}
                     }
                 }
 
@@ -159,7 +162,7 @@ Column {
 
                     MouseArea{
                         anchors.fill: parent
-                        onClicked:{ (infoRow2.expanded = !infoRow2.expanded) }
+                        onClicked:{ (infoRow2.expanded = !infoRow2.expanded); }
                     }
                 }
 
@@ -220,7 +223,7 @@ Column {
 
                       MouseArea{
                           anchors.fill: parent
-                          onClicked:{console.log(label);}
+                          onClicked:{columnRepeater.cLab=label; console.log(columnRepeater.cLab);}
                       }
                   }
               }
